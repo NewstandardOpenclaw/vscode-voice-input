@@ -36,6 +36,11 @@ F5 で Extension Development Host を起動してテストできます。
 - Endpoint: `https://api.openai.com/v1/audio/transcriptions`
 - Model: `whisper-1`
 
+## 必要な環境
+- macOS: `brew install sox`
+- Linux: `sudo apt install sox`
+- Windowsは現時点では未対応
+
 ## 注意
 - 録音には `node-record-lpcm16` を使用しています。
 - OS環境によっては録音コマンド（sox/arecordなど）が必要です。
