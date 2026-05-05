@@ -41,6 +41,40 @@ F5 で Extension Development Host を起動してテストできます。
 - Linux: `sudo apt install sox`
 - Windowsは現時点では未対応
 
+## ターミナル・グローバルホットキーで使う（macOS）
+
+VSCode外（ターミナル、Claude Code CLIなど）でも音声入力できます。
+
+### セットアップ
+
+```bash
+# 1. voiceスクリプトをインストール
+cp scripts/voice.sh /usr/local/bin/voice
+chmod +x /usr/local/bin/voice
+
+# 2. APIキー設定ファイルを作成
+mkdir -p ~/.config/voice
+cp scripts/voice-config.example ~/.config/voice/config
+# ~/.config/voice/config を編集してAPIキーを入力
+
+# 3. Hammerspoonをインストール（グローバルホットキー用）
+brew install --cask hammerspoon
+```
+
+### Hammerspoon設定
+
+1. Hammerspoonを起動
+2. システム設定 → プライバシーとセキュリティ → アクセシビリティ → Hammerspoon をオン
+3. `~/.hammerspoon/init.lua` に `scripts/hammerspoon-init.lua` の内容をコピー
+4. メニューバーの🔨→「Reload Config」
+
+### 使い方
+
+- `Ctrl+Shift+R` → 録音開始（画面中央に「🎙️ 録音中...」表示）
+- 話す
+- `Ctrl+Shift+R` → 停止＆文字起こし（クリップボードに自動コピー）
+- `Cmd+V` で任意の場所に貼り付け
+
 ## 注意
 - 録音には `node-record-lpcm16` を使用しています。
 - OS環境によっては録音コマンド（sox/arecordなど）が必要です。
