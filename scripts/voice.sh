@@ -34,12 +34,34 @@ if [[ -f "$PID_FILE" ]]; then
     -F model="whisper-1" \
     -F language="$LANGUAGE")
 
-  TEXT=$(echo "$RESPONSE" | grep -o '"text":"[^"]*"' | sed 's/"text":"//;s/"$//')
+  RAW_TEXT=$(echo "$RESPONSE" | grep -o '"text":"[^"]*"' | sed 's/"text":"//;s/"$//')
 
-  if [[ -z "$TEXT" ]]; then
+  if [[ -z "$RAW_TEXT" ]]; then
     echo "❌ 文字起こし失敗: $RESPONSE"
     rm -f "$TMPFILE"
     exit 1
+  fi
+
+  # GPTで整形（フィラー除去・句読点補完）
+  REFINE_RESPONSE=$(curl -s https://api.openai.com/v1/chat/completions \
+    -H "Authorization: Bearer $API_KEY" \
+    -H "Content-Type: application/json" \
+    -d "{
+      \"model\": \"gpt-4o-mini\",
+      \"messages\": [{
+        \"role\": \"system\",
+        \"content\": \"音声認識テキストを自然な文章に整形してください。ルール: (1)えーと・あの・まあ等のフィラーを除去 (2)適切な句読点を補完 (3)意味は一切変えない (4)整形後のテキストのみ出力\"
+      },{
+        \"role\": \"user\",
+        \"content\": \"$RAW_TEXT\"
+      }]
+    }")
+
+  TEXT=$(echo "$REFINE_RESPONSE" | grep -o '"content":"[^"]*"' | head -1 | sed 's/"content":"//;s/"$//')
+
+  # GPT整形失敗時はWhisperの結果をそのまま使用
+  if [[ -z "$TEXT" ]]; then
+    TEXT="$RAW_TEXT"
   fi
 
   osascript -e "set the clipboard to \"$TEXT\""
@@ -52,6 +74,6 @@ else
   nohup /usr/local/bin/rec -q -r 44100 -c 1 "$TMPFILE" </dev/null >>/tmp/voice-rec.log 2>&1 &
   echo $! > "$PID_FILE"
   disown
-  echo "🎙️ 録音中... もう一度実行すると停止"
+  echo "🎙️ 録音中... もう一度 voice を実行すると停止"
   osascript -e 'display notification "録音中... もう一度押すと停止" with title "🎙️ Voice Input"' 2>/dev/null || true
 fi
