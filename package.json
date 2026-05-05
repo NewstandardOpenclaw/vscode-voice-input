@@ -3,7 +3,7 @@
   "displayName": "Voice Input (Whisper)",
   "description": "Record voice and insert Whisper transcription into editor",
   "version": "0.0.1",
-  "publisher": "local",
+  "publisher": "newstandardopenclaw",
   "engines": {
     "vscode": "^1.85.0"
   },
@@ -26,7 +26,7 @@
         "command": "voiceInput.toggleRecording",
         "key": "cmd+shift+r",
         "mac": "cmd+shift+r",
-        "when": "true"
+        "when": "editorTextFocus"
       }
     ],
     "configuration": {
