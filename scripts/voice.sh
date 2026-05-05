@@ -57,7 +57,14 @@ if [[ -f "$PID_FILE" ]]; then
       }]
     }")
 
-  TEXT=$(echo "$REFINE_RESPONSE" | grep -o '"content":"[^"]*"' | head -1 | sed 's/"content":"//;s/"$//')
+  TEXT=$(echo "$REFINE_RESPONSE" | python3 -c "
+import sys, json
+try:
+  data = json.load(sys.stdin)
+  print(data['choices'][0]['message']['content'].strip())
+except:
+  pass
+")
 
   # GPT整形失敗時はWhisperの結果をそのまま使用
   if [[ -z "$TEXT" ]]; then

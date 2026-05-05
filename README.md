@@ -83,13 +83,17 @@ cp scripts/voice-config.example ~/.config/voice/config
 2. `~/.hammerspoon/init.lua` に `scripts/hammerspoon-init.lua` の内容をコピー
 3. メニューバーの🔨→「Reload Config」
 
+### Mac起動時に自動起動する設定
+
+システム設定 → 一般 → ログイン項目 → 「+」→ `Hammerspoon.app` を追加
+
 ### 使い方
 
 | 操作 | 結果 |
 |------|------|
 | `Ctrl+Shift+R` | 録音開始（画面中央に「🎙️ 録音中...」と表示） |
 | 話す | — |
-| `Ctrl+Shift+R` | 録音停止 → 文字起こし → クリップボードにコピー |
+| `Ctrl+Shift+R` | 録音停止 → Whisper文字起こし → GPT整形 → クリップボードにコピー |
 | `Cmd+V` | 任意の場所に貼り付け |
 
 ### ターミナルから直接使う場合
@@ -125,6 +129,7 @@ rm -f /tmp/voice-recording.pid /tmp/voice-recording.wav /tmp/voice-hs.log /tmp/v
 |------|------|
 | 録音コマンド | `rec`（sox）, 44100Hz, モノラル, WAV |
 | 文字起こしAPI | OpenAI Whisper API (`whisper-1`) |
+| 文字起こし整形 | Whisper後にgpt-4o-miniでフィラー除去・句読点補完（失敗時はWhisper結果をそのまま使用） |
 | クリップボード | `osascript` の AppleScript経由（Hammerspoon起動時） / `pbcopy`（ターミナル直接実行時） |
 | ホットキー管理 | Hammerspoon（Lua） |
 | APIキー保存場所 | `~/.config/voice/config`（git管理外） |
