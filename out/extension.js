@@ -97,9 +97,17 @@ async function stopRecordingAndTranscribe() {
         // Ensure file is flushed
         await new Promise((resolve) => setTimeout(resolve, 300));
         const transcript = await transcribeWithWhisper(tempFilePath);
-        await insertAtCursor(transcript);
-        statusBarItem.text = '🎙️ Voice Ready';
-        vscode.window.setStatusBarMessage('Voice Input: Transcription inserted', 2500);
+        await vscode.env.clipboard.writeText(transcript);
+        const editor = vscode.window.activeTextEditor;
+        if (editor) {
+            await insertAtCursor(transcript);
+            statusBarItem.text = '🎙️ Voice Ready';
+            vscode.window.setStatusBarMessage('Voice Input: Transcription inserted', 2500);
+        }
+        else {
+            statusBarItem.text = '🎙️ Voice Ready';
+            vscode.window.showInformationMessage(`📋 クリップボードにコピーしました: ${transcript}`);
+        }
     }
     catch (error) {
         statusBarItem.text = '🎙️ Voice Ready';
