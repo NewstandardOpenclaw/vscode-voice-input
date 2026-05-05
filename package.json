@@ -1,0 +1,63 @@
+{
+  "name": "vscode-voice-input",
+  "displayName": "Voice Input (Whisper)",
+  "description": "Record voice and insert Whisper transcription into editor",
+  "version": "0.0.1",
+  "publisher": "local",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onCommand:voiceInput.toggleRecording"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "voiceInput.toggleRecording",
+        "title": "Voice Input: Toggle Recording"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "voiceInput.toggleRecording",
+        "key": "cmd+shift+r",
+        "mac": "cmd+shift+r",
+        "when": "editorTextFocus"
+      }
+    ],
+    "configuration": {
+      "title": "Voice Input",
+      "properties": {
+        "voiceInput.openaiApiKey": {
+          "type": "string",
+          "default": "",
+          "description": "OpenAI API key"
+        },
+        "voiceInput.language": {
+          "type": "string",
+          "default": "ja",
+          "description": "Whisper transcription language (e.g. ja, en)"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "@types/vscode": "^1.85.0",
+    "@vscode/vsce": "^3.9.1",
+    "typescript": "^5.4.0"
+  },
+  "dependencies": {
+    "axios": "^1.7.2",
+    "form-data": "^4.0.0",
+    "node-record-lpcm16": "^1.0.1"
+  }
+}
